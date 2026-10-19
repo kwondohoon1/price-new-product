@@ -72,7 +72,7 @@ export function locate(book) {
   const blocks = [];
   for (let hr = 1; hr <= maxRow(ss); hr++) {
     const t = rowTexts(book, ss, hr);
-    if (t.get(1) !== '카테고리' || !findCol(t, '모델명')) continue;
+    if (!findCol(t, '카테고리') || !findCol(t, '모델명')) continue;   // 앞에 '상태' 열이 있어도 됨
     const label = [...rowTexts(book, ss, hr - 1).entries()].sort((a, b) => a[0] - b[0]).map(([, v]) => v).find(Boolean) || `표 ${blocks.length + 1}`;
     const nameCol = findCol(t, '모델명');
     const bc = {
