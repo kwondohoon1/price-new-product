@@ -83,7 +83,12 @@ export function locate(book) {
     // 마켓별 묶음: '등재가(세팅)' 열마다 바로 위 행에 마켓 이름
     const top = rowTexts(book, ss, hr - 1);
     const markets = [...t.entries()].filter(([, v]) => v === '등재가(세팅)').sort((a, b) => a[0] - b[0])
-      .map(([c]) => ({ label: top.get(c) || numToCol(c), list: c, shown: c + 1, settle: c + 2 }));
+      .map(([c]) => {
+        // 묶음: 등재가(세팅) · 노출가 · (최대혜택가) · 정산액 · 차이 — 정산액 자리는 머리글로
+        let settle = c + 2;
+        for (let k = c + 1; k <= c + 4; k++) if (t.get(k) === '정산액') { settle = k; break; }
+        return { label: top.get(c) || numToCol(c), list: c, shown: c + 1, settle };
+      });
     let n = 0;
     while (hasContent(ss, hr + 1 + n, nameCol) && text(val(book, ss, hr + 1 + n, nameCol))) n++;
     blocks.push({ label, header: hr, start: hr + 1, count: n, cols: bc, markets });
